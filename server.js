@@ -13,14 +13,17 @@ app.use(cors());
 
 // Configurar multer para recibir archivos de audio
 const upload = multer({ dest: "uploads/" });
-
+//************************* */
 // Configurar credenciales de Google Cloud
 const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
-
 const auth = new GoogleAuth({
   credentials,
   scopes: ["https://www.googleapis.com/auth/cloud-platform"],
 });
+//************************* */
+
+
+
 
 // Verificar que el directorio de uploads exista
 if (!fs.existsSync('uploads')) {
@@ -46,7 +49,7 @@ app.post("/send-audio", upload.single("audio"), async (req, res) => {
         audioConfig: {
           audioEncoding: "AUDIO_ENCODING_LINEAR_16",
           sampleRateHertz: 16000,
-          languageCode: "es-ES", // Ajusta según el idioma que usará Dialogflow
+          languageCode: "es-ES",
         },
       },
       inputAudio: audioData.toString("base64"),
@@ -63,7 +66,7 @@ app.post("/send-audio", upload.single("audio"), async (req, res) => {
     console.log(result);
     console.log('---------------');
 
-    res.json({ text: result.fulfillmentText });
+    res.json({ indice: result.fulfillmentText , intencion: result.intent.displayName});
 
     // Eliminar archivo temporal
     fs.unlinkSync(filePath);
